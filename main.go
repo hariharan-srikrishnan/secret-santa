@@ -13,11 +13,10 @@ func main() {
 	credentials := emailer.GetCredentials()
 
 	// generate a derangement and map it to players
-
 	santaTo := permute.GetPlayerMap(players)
 
-	for santa := range santaTo {
-		emailer.Send(credentials, santa, santaTo[santa])
+	for player := range santaTo {
+		emailer.Send(credentials, player, santaTo[player])
 	}
 }
 
@@ -28,6 +27,5 @@ func createAllPlayers() []*models.Player {
 	initialize all players one-by-one by calling
 	models.CreatePlayer() and append to players
 	*/
-
 	return players
 }
