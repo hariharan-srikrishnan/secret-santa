@@ -25,7 +25,7 @@ func createAllPlayers() []*models.Player {
 
 	/* 
 	initialize all players one-by-one by calling
-	models.CreatePlayer() and append to players
+	models.CreatePlayer("<player name>", "<player email>") and append to players
 	*/
 	return players
 }
