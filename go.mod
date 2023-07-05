@@ -1,4 +1,4 @@
-module santa.com/secret
+module github.com/hariharan-srikrishnan/secret-santa
 
 go 1.16
 

@@ -3,7 +3,7 @@ package emailer
 // import (
 // 	"testing"
 
-// 	"santa.com/secret/models"
+// 	"github.com/hariharan-srikrishnan/secret-santa/models"
 // )
 
 // func TestSend(t *testing.T) {

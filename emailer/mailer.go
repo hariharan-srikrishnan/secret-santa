@@ -3,8 +3,9 @@ package emailer
 import (
 	"fmt"
 	"net/smtp"
-	"santa.com/secret/models"
 	"strings"
+
+    "github.com/hariharan-srikrishnan/secret-santa/models"
 )
 
 var HOST string = "smtp.gmail.com"

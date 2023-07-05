@@ -6,9 +6,9 @@ import (
 	"io"
 	"os"
 
-	"santa.com/secret/emailer"
-	"santa.com/secret/models"
-	"santa.com/secret/permute"
+	"github.com/hariharan-srikrishnan/secret-santa/emailer"
+	"github.com/hariharan-srikrishnan/secret-santa/models"
+	"github.com/hariharan-srikrishnan/secret-santa/permute"
 )
 
 func main() {
