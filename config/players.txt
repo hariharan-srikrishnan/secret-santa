@@ -1,0 +1,3 @@
+Player 1, player1@example.com
+Player 2, player2@example.com
+Player 3, player3@example.com

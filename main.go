@@ -1,6 +1,11 @@
 package main
 
 import (
+	"encoding/csv"
+	"fmt"
+	"io"
+	"os"
+
 	"santa.com/secret/emailer"
 	"santa.com/secret/models"
 	"santa.com/secret/permute"
@@ -20,13 +25,32 @@ func main() {
 	}
 }
 
+/*
+createAllPlayers creates all the players from the config file located at config/players.txt
+*/
 func createAllPlayers() []*models.Player {
 	players := []*models.Player{}
 
-	/* 
-	initialize all players one-by-one by calling
-	models.CreatePlayer("<player name>", "<player email>") and append to players
-	*/
+	f, err := os.Open("config/players.txt")
+	if err != nil {
+		fmt.Errorf("Error opening file: %s", err)
+		os.Exit(1)
+	}
+	reader := csv.NewReader(f)
+
+	for {
+		row, err := reader.Read()
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			fmt.Errorf("Error reading file: %s", err)
+			os.Exit(1)
+		}
+		player := models.CreatePlayer(row[0], row[1])
+		players = append(players, player)
+	}
+
+	
 	return players
 }
 
@@ -34,7 +58,7 @@ func getPlayerMap(players []*models.Player) map[*models.Player]*models.Player {
 	playerCount := len(players)
 	santaMap := make(map[*models.Player]*models.Player)
 
-	arrangement := GetDerangements(playerCount)
+	arrangement := permute.GetDerangements(playerCount)
 
 	for i := 0; i < playerCount; i++ {
 		santaMap[players[i]] = players[arrangement[i]-1]
