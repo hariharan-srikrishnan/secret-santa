@@ -3,8 +3,6 @@ package permute
 import (
 	"fmt"
 	"math/rand"
-
-	"santa.com/secret/models"
 )
 
 func permutations(arr []int) [][]int {

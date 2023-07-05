@@ -15,7 +15,8 @@ var NUM_PLAYERS = 8
 
 func main() {
 	players := createAllPlayers()
-	credentials := emailer.GetCredentials()
+	// TODO: move this credentials retrieval mode to a CLI parameter
+	credentials := emailer.GetCredentials(emailer.CredentialsReadMode_ConfigFile)
 
 	// generate a derangement and map it to players
 	santaTo := getPlayerMap(players)

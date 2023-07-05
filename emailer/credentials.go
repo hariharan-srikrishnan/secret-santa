@@ -1,18 +1,20 @@
-package emailer 
+package emailer
 
 import (
-	"fmt"
-	"golang.org/x/term"
 	"bufio"
+	"encoding/json"
+	"fmt"
 	"os"
 	"strings"
 	"syscall"
+
+	"golang.org/x/term"
 )
 
 
 type Credentials struct {
-	Email    string
-	Password string
+	Email    string    `json:"email"`
+	Password string    `json:"password"`
 }
 
 
@@ -40,11 +42,36 @@ func readCredentialsFromCommandLine() (string, string, error) {
     return strings.TrimSpace(username), strings.TrimSpace(password), nil
 }
 
-func GetCredentials() *Credentials {
-
-	email, password, err := readCredentialsFromCommandLine()
+func readCredentialsFromConfigFile() (string, string, error) {
+	credentials := Credentials{}
+	fileBytes, err := os.ReadFile("config/credentials.txt")
 	if err != nil {
-		fmt.Println("error in reading/parsing credential inputs: ", err.Error())
+		return "", "", err
+	}
+	err = json.Unmarshal(fileBytes, &credentials)
+	if err != nil {
+		return "", "", err
+	}
+	return credentials.Email, credentials.Password, nil
+}
+
+func GetCredentials(credentialsReadMode CredentialsReadMode) *Credentials {
+
+	var email, password string
+	var err error
+
+	if credentialsReadMode == CredentialsReadMode_CommandLine {
+		email, password, err = readCredentialsFromCommandLine()
+		if err != nil {
+			fmt.Println("error in reading/parsing credential inputs: ", err.Error())
+			os.Exit(1)
+		}
+	} else if credentialsReadMode == CredentialsReadMode_ConfigFile {
+		email, password, err = readCredentialsFromConfigFile()
+		if err != nil {
+			fmt.Println("error in reading/parsing credential inputs: ", err.Error())
+			os.Exit(1)
+		}
 	}
 
 	return &Credentials{
@@ -52,3 +79,9 @@ func GetCredentials() *Credentials {
 		Password: password,
 	}
 }
+
+type CredentialsReadMode int 
+const (
+	CredentialsReadMode_CommandLine CredentialsReadMode = 0
+	CredentialsReadMode_ConfigFile CredentialsReadMode = 1
+)
