@@ -11,8 +11,6 @@ import (
 	"santa.com/secret/permute"
 )
 
-var NUM_PLAYERS = 8
-
 func main() {
 	players := createAllPlayers()
 	// TODO: move this credentials retrieval mode to a CLI parameter
