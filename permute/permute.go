@@ -45,7 +45,7 @@ func filterPermutations(a [][]int) [][]int {
 	return filteredPermutations
 }
 
-func getDerangements(playerCount int) []int {
+func GetDerangements(playerCount int) []int {
 	list := []int{}
 	for i := 0; i < playerCount; i++ {
 		list = append(list, i+1)
@@ -70,17 +70,4 @@ func containsAnySelfMap(a []int) bool {
 		}
 	}
 	return false 
-}
-
-func GetPlayerMap(players []*models.Player) map[*models.Player]*models.Player {
-	playerCount := len(players)
-	santaMap := make(map[*models.Player]*models.Player)
-
-	arrangement := getDerangements(playerCount)
-
-	for i := 0; i < playerCount; i++ {
-		santaMap[players[i]] = players[arrangement[i]-1]
-	}
-
-	return santaMap
 }
