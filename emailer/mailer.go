@@ -38,7 +38,7 @@ func Send(c *Credentials, from, to *models.Player) error {
 
 	err := smtp.SendMail(HOST+":"+PORT, auth, c.Email, toList, []byte(BuildMessage(mail)))	
 	if err != nil {
-		fmt.Printf("Something went wrong with sending an email %v", err)
+		fmt.Printf("Something went wrong with sending an email. Error: %v", err)
 		return err
 	}
 	return nil

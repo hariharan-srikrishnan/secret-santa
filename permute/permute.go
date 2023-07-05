@@ -49,9 +49,9 @@ func GetDerangements(playerCount int) []int {
 		list = append(list, i+1)
 	}
 	allPermutations := permutations(list)
-	fmt.Printf("Total number of permutations: %d", len(allPermutations))
+	fmt.Printf("Total number of permutations: %d\n", len(allPermutations))
 	filteredPermutations := filterPermutations(allPermutations)
-	fmt.Printf("Total number of derangements: %d", len(filteredPermutations))
+	fmt.Printf("Total number of derangements: %d\n", len(filteredPermutations))
 
 	return getRandomDerangement(filteredPermutations)
 }
