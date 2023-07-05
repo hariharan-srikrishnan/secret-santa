@@ -4,6 +4,8 @@
 
 # Running the application:
 ```go run main.go```
+or 
+```make all```
 
 # Configurations required:
 - Initialize all the players playing by editing the file `players.txt` in the `config` directory
