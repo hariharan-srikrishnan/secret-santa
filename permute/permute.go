@@ -38,7 +38,7 @@ func permutations(arr []int) [][]int {
 func filterPermutations(a [][]int) [][]int {
 	filteredPermutations := [][]int{}
 	for _, arrangement := range a {
-		if !isSelfSanta(arrangement) {
+		if !containsAnySelfMap(arrangement) {
 			filteredPermutations = append(filteredPermutations, arrangement)
 		}
 	}
@@ -63,7 +63,7 @@ func getRandomDerangement(filteredPermutations [][]int) []int {
 	return filteredPermutations[position]
 }
 
-func isSelfSanta(a []int) bool {
+func containsAnySelfMap(a []int) bool {
 	for i := 0; i < len(a); i++ {
 		if a[i] == i+1 {
 			return true 
