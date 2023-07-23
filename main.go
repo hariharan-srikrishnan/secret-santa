@@ -17,7 +17,7 @@ func main() {
 	credentials := emailer.GetCredentials(emailer.CredentialsReadMode_ConfigFile)
 
 	// generate a derangement and map it to players
-	santaTo := getPlayerMap(players)
+	santaTo := getGiftingMap(players)
 
 	for player := range santaTo {
 		emailer.Send(credentials, player, santaTo[player])
@@ -53,7 +53,7 @@ func createAllPlayers() []*models.Player {
 	return players
 }
 
-func getPlayerMap(players []*models.Player) map[*models.Player]*models.Player {
+func getGiftingMap(players []*models.Player) map[*models.Player]*models.Player {
 	playerCount := len(players)
 	santaMap := make(map[*models.Player]*models.Player)
 
