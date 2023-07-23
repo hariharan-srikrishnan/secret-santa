@@ -19,8 +19,8 @@ func main() {
 	// generate a derangement and map it to players
 	santaTo := getGiftingMap(players)
 
-	for player := range santaTo {
-		emailer.Send(credentials, player, santaTo[player])
+	for gifter, giftee := range santaTo {
+		emailer.Send(credentials, gifter, giftee)
 	}
 }
 
