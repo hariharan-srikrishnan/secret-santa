@@ -60,18 +60,16 @@ func GetCredentials(credentialsReadMode CredentialsReadMode) *Credentials {
 	var email, password string
 	var err error
 
-	if credentialsReadMode == CredentialsReadMode_CommandLine {
+	switch credentialsReadMode {
+	case CredentialsReadMode_CommandLine:
 		email, password, err = readCredentialsFromCommandLine()
-		if err != nil {
-			fmt.Println("error in reading/parsing credential inputs: ", err.Error())
-			os.Exit(1)
-		}
-	} else if credentialsReadMode == CredentialsReadMode_ConfigFile {
+	case CredentialsReadMode_ConfigFile:
 		email, password, err = readCredentialsFromConfigFile()
-		if err != nil {
-			fmt.Println("error in reading/parsing credential inputs: ", err.Error())
-			os.Exit(1)
-		}
+	}
+
+	if err != nil {
+		fmt.Println("error in reading/parsing credential inputs: ", err.Error())
+		os.Exit(1)
 	}
 
 	return &Credentials{
