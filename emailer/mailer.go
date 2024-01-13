@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/smtp"
 	"strings"
+    "time"
 
     "github.com/hariharan-srikrishnan/secret-santa/models"
 )
@@ -14,7 +15,7 @@ var PORT string = "587" // default SMTP port
 var MESSAGE string = `Dear %s,
 You are the Secret Santa for %s!`
 
-var SUBJECT string = "Secret Santa 2022"
+var SUBJECT string = fmt.Sprintf("Secret Santa %d", time.Now().Year())
 
 type Mail struct {
     Sender  string
@@ -37,7 +38,12 @@ func Send(c *Credentials, from, to *models.Player) error {
 		Body: message,
 	}
 
-	err := smtp.SendMail(HOST+":"+PORT, auth, c.Email, toList, []byte(BuildMessage(mail)))	
+	err := smtp.SendMail(buildSocketAddress(HOST, PORT), 
+                            auth, 
+                            c.Email, 
+                            toList, 
+                            []byte(BuildMessage(mail))
+                        )	
 	if err != nil {
 		fmt.Printf("Something went wrong with sending an email. Error: %v", err)
 		return err
@@ -48,8 +54,8 @@ func Send(c *Credentials, from, to *models.Player) error {
 
 func BuildMessage(mail Mail) string {
 
-    msg := ""
-    msg += fmt.Sprintf("From: %s\r\n", mail.Sender)
+    // DO NOT EDIT THIS, FORMAT HAS TO BE EXACTLY LIKE THIS FOR THE MAIL TO BE DELIVERED CORRECTLY
+    msg := fmt.Sprintf("From: %s\r\n", mail.Sender)
 
     if len(mail.To) > 0 {
         msg += fmt.Sprintf("To: %s\r\n", mail.To[0])
@@ -63,4 +69,8 @@ func BuildMessage(mail Mail) string {
     msg += fmt.Sprintf("\r\n%s\r\n", mail.Body)
 
     return msg
+}
+
+func buildSocketAddress(host string, port string) string {
+    return HOST+":"+PORT
 }
