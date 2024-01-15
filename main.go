@@ -6,9 +6,13 @@ import (
 	"io"
 	"os"
 
+	"github.com/rs/zerolog/log"
+
 	"github.com/hariharan-srikrishnan/secret-santa/emailer"
 	"github.com/hariharan-srikrishnan/secret-santa/models"
 	"github.com/hariharan-srikrishnan/secret-santa/permute"
+
+
 )
 
 func main() {
@@ -18,9 +22,23 @@ func main() {
 
 	// generate a derangement and map it to players
 	santaTo := getGiftingMap(players)
+	mailTemplate := &emailer.Mail{
+		Sender: credentials.Email,
+		Subject: emailer.SUBJECT,
+	}
+
 
 	for gifter, giftee := range santaTo {
-		emailer.Send(credentials, gifter, giftee)
+		mailTemplate.To = []string{giftee.Email()}
+		mailTemplate.Body = fmt.Sprintf(emailer.MESSAGE, gifter.Name(), giftee.Name())
+		mailer := emailer.NewMailer(
+			emailer.WithCredentials(credentials),
+			emailer.WithContent(mailTemplate),
+		)
+		err := mailer.Send()
+		if err != nil {
+			log.Error().Msgf(emailer.ERROR_SENDING_EMAIL, err)
+		}
 	}
 }
 
@@ -32,7 +50,7 @@ func createAllPlayers() []*models.Player {
 
 	f, err := os.Open("config/players.txt")
 	if err != nil {
-		fmt.Errorf("Error opening file: %s", err)
+		log.Error().Msgf("Error opening file: %s", err)
 		os.Exit(1)
 	}
 	reader := csv.NewReader(f)
@@ -42,7 +60,7 @@ func createAllPlayers() []*models.Player {
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			fmt.Errorf("Error reading file: %s", err)
+			log.Error().Msgf("Error reading file: %s", err)
 			os.Exit(1)
 		}
 		player := models.CreatePlayer(row[0], row[1])
@@ -57,7 +75,7 @@ func getGiftingMap(players []*models.Player) map[*models.Player]*models.Player {
 	playerCount := len(players)
 	santaMap := make(map[*models.Player]*models.Player)
 
-	arrangement := permute.GetDerangements(playerCount)
+	arrangement := permute.GetRandomDerangement(playerCount)
 
 	for i := 0; i < playerCount; i++ {
 		santaMap[players[i]] = players[arrangement[i]-1]

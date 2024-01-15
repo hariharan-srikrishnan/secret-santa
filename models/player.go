@@ -5,14 +5,14 @@ type Player struct {
 	email string
 }
 
-func (p *Player) GetName() string {
+func (p *Player) Name() string {
 	if p != nil {
 		return p.name
 	}
 	return ""
 }
 
-func (p *Player) GetEmail() string {
+func (p *Player) Email() string {
 	if p != nil {
 		return p.email
 	}

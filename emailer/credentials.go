@@ -67,6 +67,7 @@ func GetCredentials(credentialsReadMode CredentialsReadMode) *Credentials {
 		email, password, err = readCredentialsFromConfigFile()
 	}
 
+	// TODO: remove this logging and return an error here to the caller
 	if err != nil {
 		fmt.Println("error in reading/parsing credential inputs: ", err.Error())
 		os.Exit(1)

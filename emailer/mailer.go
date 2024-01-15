@@ -5,8 +5,6 @@ import (
 	"net/smtp"
 	"strings"
     "time"
-
-    "github.com/hariharan-srikrishnan/secret-santa/models"
 )
 
 var HOST string = "smtp.gmail.com"
@@ -26,33 +24,53 @@ type Mail struct {
     Body    string
 }
 
-func Send(c *Credentials, from, to *models.Player) error {	
-    auth := smtp.PlainAuth("", c.Email, c.Password, HOST)
-	toList := []string{to.GetEmail()}
-	message := fmt.Sprintf(MESSAGE, to.GetName(), from.GetName())
+type Mailer struct {
+    credentials *Credentials
+    mail *Mail
+}
 
-	mail := Mail {
-		Sender: c.Email,
-		To: toList,
-        Subject: SUBJECT,
-		Body: message,
-	}
+const ERROR_SENDING_EMAIL string = "Something went wrong with sending an email. Error: %v"
 
-	err := smtp.SendMail(buildSocketAddress(HOST, PORT), 
-                            auth, 
-                            c.Email, 
-                            toList, 
-                            []byte(BuildMessage(mail))
-                        )	
-	if err != nil {
-		fmt.Printf("Something went wrong with sending an email. Error: %v", err)
-		return err
+/* OPTIONS FOR CONFIGURATION */
+
+// Functional option for configuring Credentials.
+func WithCredentials(c *Credentials) func(*Mailer) {
+	return func(m *Mailer) {
+		m.credentials = c
 	}
-	return nil
+}
+
+// Functional option for configuring Message Content
+func WithContent(content *Mail) func(*Mailer) {
+    return func(m *Mailer) {
+        m.mail = content
+    }
+}
+
+func NewMailer(options ...func(*Mailer)) *Mailer {
+    mailer := &Mailer{}
+    for _, option := range options {
+        option(mailer)
+    }
+    return mailer
 }
 
 
-func BuildMessage(mail Mail) string {
+func (m *Mailer) Send() error {
+    auth := smtp.PlainAuth("", m.credentials.Email, m.credentials.Password, HOST)
+    toList := m.mail.To
+
+	err := smtp.SendMail(buildSocketAddress(HOST, PORT), 
+                            auth, 
+                            m.credentials.Email, 
+                            toList, 
+                            []byte(buildMessage(m.mail)),
+                        )	
+	return err
+
+}
+
+func buildMessage(mail *Mail) string {
 
     // DO NOT EDIT THIS, FORMAT HAS TO BE EXACTLY LIKE THIS FOR THE MAIL TO BE DELIVERED CORRECTLY
     msg := fmt.Sprintf("From: %s\r\n", mail.Sender)

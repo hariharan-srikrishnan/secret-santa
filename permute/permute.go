@@ -43,7 +43,11 @@ func filterPermutations(a [][]int) [][]int {
 	return filteredPermutations
 }
 
-func GetDerangements(playerCount int) []int {
+func GetRandomDerangement(playerCount int) []int {
+	return getRandomDerangement(getValidDerangements(playerCount))
+}
+
+func getValidDerangements(playerCount int) [][]int {
 	list := []int{}
 	for i := 0; i < playerCount; i++ {
 		list = append(list, i+1)
@@ -53,12 +57,13 @@ func GetDerangements(playerCount int) []int {
 	filteredPermutations := filterPermutations(allPermutations)
 	fmt.Printf("Total number of derangements: %d\n", len(filteredPermutations))
 
-	return getRandomDerangement(filteredPermutations)
+	return filteredPermutations
+	// return getRandomDerangement(filteredPermutations)
 }
 
 func getRandomDerangement(filteredPermutations [][]int) []int {
-	position := rand.Intn(len(filteredPermutations))
-	return filteredPermutations[position]
+	randomPosition := rand.Intn(len(filteredPermutations))
+	return filteredPermutations[randomPosition]
 }
 
 func containsAnySelfMap(a []int) bool {
